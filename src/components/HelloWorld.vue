@@ -1,58 +1,104 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
-  </div>
+  <v-container>
+    <v-row justify="center" class="flex-column">
+      <v-col>
+        <v-card>
+        <v-card-title v-if="enterHistory">
+          Last entered: {{LastPersonEntered}}
+        </v-card-title>
+      </v-card>
+      </v-col>
+
+      <v-col>
+        <v-table theme="dark">
+        <thead>
+          <tr>
+            <th class="text-left">
+              Id
+            </th>
+            <th class="text-left">
+              Member
+            </th>
+            <th class="text-left">
+              Time
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+          v-for="item in ArrayOfEnteredCards"
+          :key="item.Time">
+            <td>{{item.Id}}</td>
+            <td>{{item.Member}}</td>
+            <td>{{item.Time}}</td>
+          </tr>
+        </tbody>
+      </v-table>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'HelloWorld',
-  props: {
-    msg: String
+
+  data: () => ({
+    member: "Mother",
+    isMember: false,
+    enterHistory: null
+  }),
+
+  computed: {
+    LastPersonEntered() {
+      if (this.isMember) {
+        var lastKey = Object.keys(this.enterHistory).pop();
+        return this.enterHistory[lastKey].Member;
+      } else {
+        return 0;
+      }
+    },
+
+    ArrayOfEnteredCards() {
+      var result = [];
+      // Make array out of object of enter history received from backend
+      if (this.isMember) {
+        for (var property in this.enterHistory) {
+          if (Object.hasOwn(this.enterHistory, property)) {
+            var object = this.enterHistory[property];
+            var finalObject = {
+              "Id": object.Id,
+              "Member": object.Member,
+              "Time": object.Time
+            };
+            result.push(finalObject);
+          }
+        }
+
+        return result.reverse();
+      } else {
+        return 0;
+      }
+    }
+  },
+
+  async mounted() {
+    await this.FetchAllEnterHistory();
+  },
+
+  methods: {
+    async FetchAllEnterHistory() {
+      var fetchUrl = "http://localhost:3000/enterhistory";
+      axios.get(fetchUrl).then(res => {
+        this.enterHistory = res.data;
+        this.isMember = true;
+      })
+
+      console.log("CALLED");
+    }
   }
+
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-</style>
