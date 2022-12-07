@@ -31,12 +31,12 @@ export default {
 
   data: () => ({
     connection: {
-        host: "vfc64260-internet-facing-376ebf692d75cbe3.elb.us-east-1.amazonaws.com",
-        protocol: "ws",
+        host: "31d830ed6f1642a2a73ae993e116f1bf.s2.eu.hivemq.cloud",
+        protocol: "mqtts",
         clientId: "node-front-client",
         username: "ivanov",
         password: "ivanivanov",
-        port: "8083",
+        port: "8884",
         endpoint: "/mqtt",
         clean: true,
     }
