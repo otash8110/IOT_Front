@@ -32,11 +32,11 @@ export default {
   data: () => ({
     connection: {
         host: "vfc64260-internet-facing-376ebf692d75cbe3.elb.us-east-1.amazonaws.com",
-        protocol: "wss",
+        protocol: "ws",
         clientId: "node-front-client",
         username: "ivanov",
         password: "ivanivanov",
-        port: "8084",
+        port: "8083",
         endpoint: "/mqtt",
         clean: true,
     }
