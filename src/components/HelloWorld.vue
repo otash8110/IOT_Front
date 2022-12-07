@@ -270,7 +270,7 @@ export default {
 
   methods: {
     async FetchAllEnterHistory() {
-      var fetchUrl =  process.env.HistoryEnterURL || "http://localhost:3000/enterhistory";
+      var fetchUrl =  "https://iot-smart-backend.onrender.com/enterhistory";
       axios.get(fetchUrl).then(res => {
         this.enterHistory = res.data;
         this.isMember = true;
